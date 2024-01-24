@@ -1,0 +1,1 @@
+export default (msg: any) => console.log(msg)
