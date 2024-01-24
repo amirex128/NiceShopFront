@@ -26,46 +26,41 @@ const otpSent = ref(false)
 const loading = ref(false)
 
 let settings = useSettingsStore();
-const {$moment} = useNuxtApp()
-console.log($moment().jDayOfYear())
+
 async function sendCode() {
   loading.value = true
 
 
-  let {status, error} = await useMyFetch('/Users/LoginRegister', {
+  let {error} = await useMyFetch('/Users/LoginRegister', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(formData),
   });
-  if (status.value === "error") {
-    showError("خطا در ارسال کد تائید.")
-    loading.value = false
-  } else {
-    settings.state.phone = formData.phone
+  settings.state.phone = formData.phone
+  loading.value = false
+  if(!error.value){
     otpSent.value = true
-    loading.value = false
   }
 }
 
 
-const approveOtp = async (e) => {
+const approveOtp = () => {
   loading.value = true
-
-  try {
-    e.preventDefault()
-    let res = await signIn(
-        {...formData},
-        {callbackUrl: '/'}
-    )
+  signIn(
+      {
+        phone: formData.phone,
+        otp: parseInt(formData.otp),
+      },
+      {callbackUrl: '/'}
+  ).then((res) => {
+    showSuccess("ورود موفقیت آمیز بود.")
+  }).catch((err) => {
+    showError("خطا در ورود.")
+  }).finally(() => {
     loading.value = false
-    console.log("res", res);
-
-  } catch (error) {
-    loading.value = false
-    console.log("error", error);
-  }
+  })
 }
 
 </script>

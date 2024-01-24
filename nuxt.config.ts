@@ -61,6 +61,7 @@ export default defineNuxtConfig({
             type: 'local',
             endpoints: {
                 signIn: {path: '/Users/ApproveOtp', method: 'post'},
+                signOut: {path: '/', method: 'get'},
                 getSession: {path: '/Users/Info', method: 'get'}
             },
             pages: {

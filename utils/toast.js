@@ -2,7 +2,6 @@
 
 export const showError = (message) => {
     const toast = useToast();
-    console.log(message)
     toast.showError(message)
 }
 

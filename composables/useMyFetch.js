@@ -1,3 +1,4 @@
+import {showSuccess} from "~/utils/toast.js";
 
 export const useMyFetch = (request, opts) => {
     const config = useRuntimeConfig()
@@ -10,7 +11,31 @@ export const useMyFetch = (request, opts) => {
             'Authorization': `Bearer ${authcookie.value}`
         },
         onResponseError: (error) => {
-            console.log("ssssssssssssssssssssssssss")
+            error.response._data.errorMessages.forEach((errorMessage) => {
+                showError(errorMessage)
+            })
+        },
+        onResponse: (response) => {
+            if (response.response.status === 401) {
+                showError('You are not authorized to view this page')
+                router.push('/auth/login')
+            }
+            if (response.response.status === 403) {
+                showError('You are not authorized to view this page')
+                router.push('/auth/login')
+            }
+            if (response.response.status === 404) {
+                showError('Page not found')
+                router.push('/auth/login')
+            }
+            if (response.response.status === 200) {
+
+                if (response.response._data.successMessages) {
+                    response.response._data.successMessages.forEach((successMessage) => {
+                        showSuccess(successMessage)
+                    })
+                }
+            }
         }
     })
 }

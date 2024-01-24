@@ -1,49 +1,65 @@
 <template>
-  <v-data-table-server
-      v-model:items-per-page="itemsPerPage"
-      :search="search"
-      :headers="headers"
-      :items-length="totalItems"
-      :items="serverItems"
-      :loading="loading"
-      item-value="name"
-      @update:options="loadItems"
-  >
-    <template v-slot:tfoot>
-      <tr>
-        <td>
-          <v-text-field v-model="search" hide-details placeholder="جستجو ..." class="ma-2"
-                        density="compact"></v-text-field>
-        </td>
-      </tr>
-    </template>
-    <template v-slot:item.edit="{ item }">
-      <v-btn color="primary" icon @click="editItem(item)">
-        <v-icon>mdi-pencil</v-icon>
-      </v-btn>
-    </template>
-    <template v-slot:item.delete="{ item }">
-      <v-btn color="error" icon @click="openDeleteDialog(item)">
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-    </template>
-  </v-data-table-server>
+  <v-container>
+    <v-alert elevation="3" color="blue" title="لیست دسته بندی ها">
+      در این لیست شما تمامی دسته بندی های موجود برای مقالات و محصولات را مشاهده میکنید
+    </v-alert>
+    <v-btn class="t-my-4"
+           elevation="1"
+           prepend-icon="mdi-plus"
+           @click="router.push({path:`/categories/create`})"
+           variant="tonal">
+      ایجاد دسته بندی
+    </v-btn>
+    <v-data-table-server
+        v-model:items-per-page="itemsPerPage"
+        :search="search"
+        :headers="headers"
+        :items-length="totalItems"
+        :items="serverItems"
+        :loading="loading"
+        item-value="name"
+        @update:options="loadItems"
+        loading-text="در حال بارگذاری ..."
+        no-data-text="داده ای برای نمایش وجود ندارد"
+        no-results-text="موردی یافت نشد"
+        items-per-page-text="تعداد در هر صفحه"
+        rows-per-page-text="ردیف در هر صفحه"
+    >
+      <template v-slot:tfoot>
+        <tr>
+          <td>
+            <v-text-field v-model="search" hide-details placeholder="جستجو ..." class="ma-2"
+                          density="compact"></v-text-field>
+          </td>
+        </tr>
+      </template>
+      <template v-slot:item.edit="{ item }">
+        <v-btn variant="tonal" size="small" color="primary" icon @click="editItem(item)">
+          <v-icon>mdi-pencil</v-icon>
+        </v-btn>
+      </template>
+      <template v-slot:item.delete="{ item }">
+        <v-btn variant="tonal" size="small" color="error" icon @click="openDeleteDialog(item)">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </template>
+    </v-data-table-server>
 
-  <v-dialog v-model="deleteDialog" max-width="500px">
-    <v-card>
-      <v-card-title class="headline">آیا از حذف این مورد مطمئن هستید؟</v-card-title>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="green darken-1" text @click="deleteDialog = false">خیر</v-btn>
-        <v-btn color="red darken-1" text @click="deleteItem">بله</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <v-dialog v-model="deleteDialog" max-width="500px">
+      <v-card>
+        <v-card-title class="headline">آیا از حذف این مورد مطمئن هستید؟</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="tonal" color="green darken-1" text @click="deleteDialog = false">خیر</v-btn>
+          <v-btn variant="tonal" color="red darken-1" text @click="deleteItem">بله</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script setup>
 import {ref} from 'vue'
-import {useRouter} from 'vue-router'
 import {useMyFetch} from '@/composables/useMyFetch'
 
 const itemsPerPage = ref(5)
@@ -79,7 +95,7 @@ async function loadItems({page, itemsPerPage}) {
 }
 
 const editItem = (item) => {
-  router.push(`/categories/${item.id}`)
+  router.push({path: `/categories/edit/${item.id}`})
 }
 
 const openDeleteDialog = (item) => {
@@ -89,22 +105,11 @@ const openDeleteDialog = (item) => {
 
 const deleteItem = async () => {
   if (itemToDelete.value) {
-    try {
-      const response = await useMyFetch(`Categories/Delete/${itemToDelete.value.id}`, {method: 'DELETE'})
-      if (response.data.value.succeeded) {
-        response.data.value.successMessages.forEach((successMessage) => {
-          showSuccess(successMessage)
-        })
-        loadItems({page: 1, itemsPerPage: itemsPerPage.value}) // reload items
-      } else if (response.data.value.succeeded === false) {
-        response.data.value.errorMessages.forEach((errorMessage) => {
-          showError(errorMessage)
-        })
-      }
-      deleteDialog.value = false
-    } catch (error) {
-      showError('An unknown error occurred.')
+    const {error} = await useMyFetch(`Categories/Delete/${itemToDelete.value.id}`, {method: 'DELETE'})
+    if (!error.value) {
+      loadItems({page: 1, itemsPerPage: itemsPerPage.value}) // reload items
     }
+    deleteDialog.value = false
   }
 }
 </script>
