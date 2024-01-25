@@ -66,20 +66,20 @@ const approveOtp = () => {
 </script>
 
 <template>
-  <div class="t-flex t-justify-center t-items-center t-h-full">
+  <div class="flex justify-center items-center h-full">
     <div v-if="!otpSent"
-         class="t-flex t-flex-col t-justify-between t-items-center t-shadow-2xl t-rounded-2xl t-p-10 t-w-96 t-h-96">
-      <div class="t-text-xl t-text-center">
+         class="flex flex-col justify-between items-center shadow-2xl rounded-2xl p-10 w-96 h-96">
+      <div class="text-xl text-center">
         ورود / عضویت
         <hr/>
-        <div class="t-text-lg">
+        <div class="text-lg">
           پنل مدیریت فروشگاه
         </div>
       </div>
       <div>
         <v-text-field
             type="number"
-            class="t-w-full"
+            class="w-full"
             label="شماره موبایل"
             variant="outlined"
             v-model="formData.phone"
@@ -91,8 +91,8 @@ const approveOtp = () => {
       </div>
     </div>
     <div v-if="otpSent"
-         class="t-flex t-flex-col t-justify-between t-items-center t-shadow-2xl t-rounded-2xl t-p-10 t-w-96 t-h-96">
-      <div class="t-text-xl">
+         class="flex flex-col justify-between items-center shadow-2xl rounded-2xl p-10 w-96 h-96">
+      <div class="text-xl">
         کد تائید برای شما ارسال شده است آن را وارد نمایید
       </div>
       <div>
@@ -106,13 +106,13 @@ const approveOtp = () => {
         ></v-otp-input>
       </div>
       <div>
-        <v-btn @click="approveOtp" :loading="loading">تائید کد</v-btn>
+        <v-btn variant="tonal" elevation="2" @click="approveOtp" :loading="loading">تائید کد</v-btn>
       </div>
       <div>
-        <v-btn @click="sendCode" :loading="loading">ارسال مجدد کد تائید</v-btn>
+        <v-btn variant="tonal" elevation="2" color="secondary" @click="sendCode" :loading="loading">ارسال مجدد کد تائید</v-btn>
       </div>
       <div>
-        <v-btn @click="otpSent=false" :loading="loading">تغییر شماره موبایل</v-btn>
+        <v-btn variant="tonal" elevation="2" color="accent" @click="otpSent=false" :loading="loading">تغییر شماره موبایل</v-btn>
       </div>
     </div>
   </div>

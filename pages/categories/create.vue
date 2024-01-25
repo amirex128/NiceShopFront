@@ -1,26 +1,22 @@
 <template>
   <v-container>
-    <v-form ref="form" @submit.prevent="submitForm">
+    <div>
       <v-text-field
           variant="outlined"
           v-model="formData.name"
           label="Name"
           :rules="[v => !!v || 'Name is required']"
-          required
+          requiredclass="mb-3"
+
       ></v-text-field>
-      <v-textarea
-          variant="outlined"
-          v-model="formData.description"
-          label="Description"
-          :rules="[v => !!v || 'Description is required']"
-          required
-      ></v-textarea>
+
       <v-text-field
           variant="outlined"
           v-model="formData.Slug"
           label="Slug"
           :rules="[v => !!v || 'Slug is required', v => /^[\w-]+$/.test(v) || 'Invalid slug format']"
           required
+          class="mb-3"
       ></v-text-field>
       <v-combobox
           variant="outlined"
@@ -30,26 +26,32 @@
           chips
           deletable-chips
           :rules="[v => !!v.length || 'At least one SEO tag is required']"
+          class="mb-3"
       ></v-combobox>
-      <v-select
-          variant="outlined"
-          v-model="formData.medias"
-          :items="mediaItems"
-          item-text="path"
-          item-value="id"
-          label="Medias"
-          multiple
-          :rules="[v => !!v.length || 'At least one media is required']"
-      ></v-select>
-      <v-btn type="submit">Submit</v-btn>
-    </v-form>
+      <QuillEditor
+          toolbar="full"
+          theme="snow"
+          dir="rtl"
+          class="mb-3 h-80 border"
+          v-model="formData.description"
+      />
+      <media-select/>
+
+      <v-btn class="my-4"
+             elevation="1"
+             prepend-icon="mdi-plus"
+             @click="submitForm"
+             variant="tonal">
+        ذخیره
+      </v-btn>
+    </div>
   </v-container>
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
-import {useMyFetch} from '~/composables/useMyFetch.js';
-import {useRouter} from 'vue-router';
+import {QuillEditor} from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import MediaSelect from "~/components/mediaSelect.vue";
 
 const formData = ref({
   name: '',
@@ -59,28 +61,21 @@ const formData = ref({
   medias: []
 });
 
-const mediaItems = ref([]);
 
 const router = useRouter();
 
-onMounted(async () => {
-  const {data} = await useMyFetch('Medias/GetAll',{});
-  mediaItems.value = data;
-});
-
 const submitForm = async () => {
-  if (formData.value.name && formData.value.description && formData.value.Slug) {
-    const {error} = await useMyFetch('Categories/Create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData.value),
-    });
+  const {error} = await useMyFetch('Categories/Create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData.value),
+  });
 
-    if (!error.value) {
-      router.push('/categories');
-    }
+  if (!error.value) {
+    router.push('/categories');
   }
+
 };
 </script>

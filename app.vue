@@ -4,7 +4,7 @@
     <NuxtLoadingIndicator/>
     <NuxtLayout>
       <v-app>
-        <div class="t-h-full">
+        <div class="h-full">
           <v-snackbar
               :timeout="3000"
               :color="toast.color"

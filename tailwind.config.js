@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    prefix: 't-', // add your prefix here
+    prefix: '', // add your prefix here
     important: true,
     content: [
         "./components/**/*.{js,vue,ts}",

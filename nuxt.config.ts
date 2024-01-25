@@ -25,7 +25,8 @@ export default defineNuxtConfig({
     components: true,
     runtimeConfig: {
         public: {
-            baseURL: process.env.NUXT_PUBLIC_API_URL,
+            baseURL: process.env.NUXT_PUBLIC_BACKEND_API_URL,
+            baseBackendURL: process.env.NUXT_PUBLIC_BACKEND_URL,
         },
     },
     devtools: {
@@ -56,7 +57,7 @@ export default defineNuxtConfig({
         globalAppMiddleware: {
             isEnabled: true,
         },
-        baseURL: process.env.NUXT_PUBLIC_API_URL || 'https://localhost:5001/',
+        baseURL: process.env.NUXT_PUBLIC_BACKEND_API_URL || 'https://localhost/',
         provider: {
             type: 'local',
             endpoints: {

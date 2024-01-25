@@ -3,7 +3,7 @@
     <v-alert elevation="3" color="blue" title="لیست دسته بندی ها">
       در این لیست شما تمامی دسته بندی های موجود برای مقالات و محصولات را مشاهده میکنید
     </v-alert>
-    <v-btn class="t-my-4"
+    <v-btn class="my-4"
            elevation="1"
            prepend-icon="mdi-plus"
            @click="router.push({path:`/categories/create`})"

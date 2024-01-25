@@ -1,6 +1,6 @@
 import {showSuccess} from "~/utils/toast.js";
 
-export const useMyFetch = (request, opts) => {
+export const useMyFetch = (request, opts = {}) => {
     const config = useRuntimeConfig()
     const authcookie = useCookie('auth:token');
     return useFetch(request, {
@@ -11,9 +11,22 @@ export const useMyFetch = (request, opts) => {
             'Authorization': `Bearer ${authcookie.value}`
         },
         onResponseError: (error) => {
-            error.response._data.errorMessages.forEach((errorMessage) => {
-                showError(errorMessage)
-            })
+
+            if (error.response._data.errorMessages) {
+                error.response._data.errorMessages.forEach((errorMessage) => {
+                    showError(errorMessage)
+                })
+            }
+            if (error.response._data) {
+                for (let key in error.response._data.errors) {
+                    if (error.response._data.errors.hasOwnProperty(key)) {
+                        error.response._data.errors[key].forEach((errorMessage) => {
+                            showError(errorMessage);
+                        });
+                    }
+                }
+            }
+
         },
         onResponse: (response) => {
             if (response.response.status === 401) {
