@@ -11,13 +11,17 @@ export const useMyFetch = (request, opts = {}) => {
             'Authorization': `Bearer ${authcookie.value}`
         },
         onResponseError: (error) => {
-
-            if (error.response._data.errorMessages) {
-                error.response._data.errorMessages.forEach((errorMessage) => {
-                    showError(errorMessage)
-                })
-            }
             if (error.response._data) {
+
+                if (error.response._data.status){
+                    showError(error.response._data.title)
+                }
+
+                if (error.response._data.errorMessages) {
+                    error.response._data.errorMessages.forEach((errorMessage) => {
+                        showError(errorMessage)
+                    })
+                }
                 for (let key in error.response._data.errors) {
                     if (error.response._data.errors.hasOwnProperty(key)) {
                         error.response._data.errors[key].forEach((errorMessage) => {

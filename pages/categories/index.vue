@@ -95,7 +95,7 @@ async function loadItems({page, itemsPerPage}) {
 }
 
 const editItem = (item) => {
-  router.push({path: `/categories/edit/${item.id}`})
+  router.push({path: `/categories/${item.id}`})
 }
 
 const openDeleteDialog = (item) => {

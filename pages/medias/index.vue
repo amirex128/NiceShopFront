@@ -83,7 +83,7 @@ import {useMyFetch} from '@/composables/useMyFetch'
 
 let images = ref([])
 let pageNumber = ref(1)
-let pageSize = ref(10)
+let pageSize = ref(50)
 let deleteDialog = ref(false)
 let imageToDelete = ref(null)
 let selectedFiles = ref(null)

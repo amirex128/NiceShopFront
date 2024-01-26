@@ -12,7 +12,7 @@
 
       <v-text-field
           variant="outlined"
-          v-model="formData.Slug"
+          v-model="formData.slug"
           label="Slug"
           :rules="[v => !!v || 'Slug is required', v => /^[\w-]+$/.test(v) || 'Invalid slug format']"
           required
@@ -33,9 +33,10 @@
           theme="snow"
           dir="rtl"
           class="mb-3 h-80 border"
-          v-model="formData.description"
+          contentType="html"
+          v-model:content="formData.description"
       />
-      <media-select/>
+      <media-select v-model="formData.medias"/>
 
       <v-btn class="my-4"
              elevation="1"
@@ -53,24 +54,28 @@ import {QuillEditor} from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import MediaSelect from "~/components/mediaSelect.vue";
 
-const formData = ref({
+const formData = reactive({
   name: '',
   description: '',
-  Slug: '',
+  parentCategoryId: null,
+  slug: '',
   seoTags: [],
   medias: []
 });
 
-
 const router = useRouter();
 
 const submitForm = async () => {
+
   const {error} = await useMyFetch('Categories/Create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(formData.value),
+    body: JSON.stringify({
+      ...formData,
+      medias: formData.medias.map(item => item.id),
+    }),
   });
 
   if (!error.value) {
